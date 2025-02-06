@@ -20,8 +20,18 @@
         <label for="isbn">ISBN</label>
         <input type="text" id="isbn" name="isbn" th:field="*{isbn}" />
         <div style="clear: both; display: block; height: 10px"></div>
+        <label for="publicationYear">Publication Year</label>
+        <input
+          type="text"
+          id="publicationYear"
+          name="publicationYear"
+          th:field="*{publicationYear}"
+          title="Enter the publication year"
+          placeholder="Publication Year"
+        />
+        <div style="clear: both; display: block; height: 10px"></div>
+        <input type="submit" value="Save" />
       </form>
-      <input type="button" value="Save" onclick="submit()" />
     </div>
   </body>
 </html>

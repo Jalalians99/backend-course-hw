@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>BookList</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  </head>
+  <body>
+    <h1>Edit book</h1>
+    <div>
+      <form th:object="${book}" th:action="@{../save}" action="#" method="post">
+        <label for="id"></label>
+        <input type="hidden" id="id" th:field="*{id}" class="form-control" />
+        <div style="clear: both; display: block; height: 10px"></div>
+        <label for="title">Bookname</label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          th:field="*{title}"
+          class="form-control"
+        />
+        <div style="clear: both; display: block; height: 10px"></div>
+        <label for="author">Author</label>
+        <input
+          type="text"
+          id="author"
+          name="author"
+          th:field="*{author}"
+          class="form-control"
+        />
+        <div style="clear: both; display: block; height: 10px"></div>
+        <label for="price">Price</label>
+        <input
+          type="text"
+          id="price"
+          name="price"
+          th:field="*{price}"
+          class="form-control"
+        />
+        <div style="clear: both; display: block; height: 10px"></div>
+        <label for="isbn">ISBN</label>
+        <input
+          type="text"
+          id="isbn"
+          name="isbn"
+          th:field="*{isbn}"
+          class="form-control"
+        />
+        <div style="clear: both; display: block; height: 10px"></div>
+        <label for="publicationYear">Publication Year</label>
+        <input
+          type="text"
+          id="publicationYear"
+          name="publicationYear"
+          th:field="*{publicationYear}"
+          title="Enter the publication year"
+          placeholder="Publication Year"
+          class="form-control"
+        />
+        <div style="clear: both; display: block; height: 10px"></div>
+        <label for="category">Category</label>
+        <select id="category" th:field="*{category}" class="form-control">
+          <option
+            th:each="category : ${categories}"
+            th:value="${category.categoryid}"
+            th:text="${category.name}"
+          ></option>
+        </select>
+        <div style="clear: both; display: block; height: 10px"></div>
+        <input type="submit" class="btn btn-success" value="Save" />
+      </form>
+    </div>
+  </body>
+</html>

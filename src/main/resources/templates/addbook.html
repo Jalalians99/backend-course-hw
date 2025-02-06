@@ -30,6 +30,9 @@
           placeholder="Publication Year"
         />
         <div style="clear: both; display: block; height: 10px"></div>
+        <label for="category">Category</label>
+        <select id="category" name="category" th:field="*{category}">
+          <option th:each="category : ${categories}" th:value="${category}" th:text="${category.name}"></option>
         <input type="submit" value="Save" />
       </form>
     </div>

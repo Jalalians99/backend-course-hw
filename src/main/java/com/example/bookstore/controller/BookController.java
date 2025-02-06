@@ -19,6 +19,7 @@ public class BookController {
     private BookRepository repository;  // Injecting the repository
     @RequestMapping(value = {"/", "/booklist"})
     public String bookList(Model model) {
+        List<Book> books = (List<Book>) repository.findAll();
         model.addAttribute("books", books);
         return "booklist";
     }

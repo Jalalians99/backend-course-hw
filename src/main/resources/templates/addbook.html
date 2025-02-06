@@ -1,26 +1,27 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
+  <head>
     <title>BookList</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head>
-<body>
-	<h1>Add book</h1>
-	<div>
+  </head>
+  <body>
+    <h1>Add book</h1>
+    <div>
       <form th:object="${book}" th:action="@{save}" action="#" method="post">
-        <label for="bname">Bookname</label>
-        <input type="text" id="bname" name="bname" th:field="*{bname}" />
-        <div style="clear: both; display: block; height:10px;"></div>
+        <label for="title">Bookname</label>
+        <input type="text" id="title" name="title" th:field="*{title}" />
+        <div style="clear: both; display: block; height: 10px"></div>
         <label for="author">Author</label>
         <input type="text" id="author" name="author" th:field="*{author}" />
-        <div style="clear: both; display: block; height:10px;"></div>
+        <div style="clear: both; display: block; height: 10px"></div>
         <label for="price">Price</label>
         <input type="text" id="price" name="price" th:field="*{price}" />
-        <div style="clear: both; display: block; height:10px;"></div>
+        <div style="clear: both; display: block; height: 10px"></div>
         <label for="isbn">ISBN</label>
         <input type="text" id="isbn" name="isbn" th:field="*{isbn}" />
-        <div style="clear: both; display: block; height:10px;"></div>
+        <div style="clear: both; display: block; height: 10px"></div>
       </form>
+      <input type="button" value="Save" onclick="submit()" />
     </div>
-</body>
+  </body>
 </html>

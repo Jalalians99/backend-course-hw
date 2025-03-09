@@ -10,15 +10,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
 
 import com.example.bookstore.domain.CategoryRepository;
 import com.example.bookstore.domain.Book;
 import com.example.bookstore.domain.BookRepository;
 
-
-@RestController
+@Controller
 public class BookController {
     @Autowired
     private BookRepository repository; // Injecting the repository
@@ -35,13 +32,15 @@ public class BookController {
 
     // RESTful service to get all books
     @RequestMapping(value = "/books", method = RequestMethod.GET)
-    public  List<Book> bookListRest() {
+    @ResponseBody
+    public List<Book> bookListRest() {
         return (List<Book>) repository.findAll();
     }
 
     // RESTful service to get book by id
     @RequestMapping(value = "/book/{id}", method = RequestMethod.GET)
-    public  Optional<Book> findBookRest(@PathVariable("id") Long bookId) {
+    @ResponseBody
+    public Optional<Book> findBookRest(@PathVariable("id") Long bookId) {
         return repository.findById(bookId);
     }
 
@@ -74,5 +73,4 @@ public class BookController {
         model.addAttribute("categories", categoryRepository.findAll());
         return "editbook";
     }
-    
 }

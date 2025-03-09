@@ -7,11 +7,16 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.bookstore.domain.Category;
 import com.example.bookstore.domain.CategoryRepository;
 import com.example.bookstore.domain.Book;
 import com.example.bookstore.domain.BookRepository;
+import com.example.bookstore.domain.User;
+import com.example.bookstore.domain.UserRepository;
 
 @SpringBootApplication
 public class BookstoreApplication {
@@ -19,49 +24,131 @@ public class BookstoreApplication {
     private static final Logger log = LoggerFactory.getLogger(BookstoreApplication.class);
 	public static void main(String[] args) {
 		SpringApplication.run(BookstoreApplication.class, args);
-        }
+    }
     
     @Bean
-    public CommandLineRunner loadData(BookRepository repository, CategoryRepository categoryRepository) {
+    @Transactional
+    public CommandLineRunner loadData(BookRepository bookRepository, CategoryRepository categoryRepository) {
         return args -> {
-            log.info("save a couple of books");
-
-            Category category1 = new Category("Fiction");
-            Category category2 = new Category("Non-Fiction");
-            Category category3 = new Category("Fantasy");
-            Category category4 = new Category("Science Fiction");
-            Category category5 = new Category("Horror");
-            Category category6 = new Category("Romance");
-            Category category7 = new Category("Mystery");
-            Category category8 = new Category("Thriller");
-            Category category9 = new Category("Biography");
-            Category category10 = new Category("History");
-            Category category11 = new Category("Self-Help");
-            Category category12 = new Category("Cooking");
-
-            categoryRepository.save(category1);
-            categoryRepository.save(category2);
-            categoryRepository.save(category3);
-            categoryRepository.save(category4);
-            categoryRepository.save(category5);
-            categoryRepository.save(category6);
-            categoryRepository.save(category7);
-            categoryRepository.save(category8);
-            categoryRepository.save(category9);
-            categoryRepository.save(category10);
-            categoryRepository.save(category11);
-            categoryRepository.save(category12);
-
-
-            repository.save(new Book("1984", "George Orwell", 1949, "1234567890", 9.99, category1));
-            repository.save(new Book("To Kill a Mockingbird", "Harper Lee", 1960, "1234567891", 7.99, category3));
-            repository.save(new Book("A farewell to Arms", "Ernest Hemingway", 1929, "1232323-21", 5.99, category8));
-            repository.save(new Book("Animal Farm", "George Orwell", 1945, "2212343-5", 6.99, category7));
-            // Add more sample books as needed
-            log.info("fetch all books");
-            for (Book book : repository.findAll()) {
-                log.info(book.toString());
+            log.info("Checking if sample data needs to be loaded...");
+            
+            // Check if data already exists
+            if (categoryRepository.count() == 0) {
+                log.info("No categories found. Creating sample categories...");
+                
+                // Create categories
+                Category fiction = new Category("Fiction");
+                Category nonFiction = new Category("Non-Fiction");
+                Category fantasy = new Category("Fantasy");
+                Category scienceFiction = new Category("Science Fiction");
+                Category horror = new Category("Horror");
+                Category romance = new Category("Romance");
+                Category mystery = new Category("Mystery");
+                Category thriller = new Category("Thriller");
+                Category biography = new Category("Biography");
+                Category history = new Category("History");
+                Category selfHelp = new Category("Self-Help");
+                Category cooking = new Category("Cooking");
+                
+                // Save categories
+                categoryRepository.save(fiction);
+                categoryRepository.save(nonFiction);
+                categoryRepository.save(fantasy);
+                categoryRepository.save(scienceFiction);
+                categoryRepository.save(horror);
+                categoryRepository.save(romance);
+                categoryRepository.save(mystery);
+                categoryRepository.save(thriller);
+                categoryRepository.save(biography);
+                categoryRepository.save(history);
+                categoryRepository.save(selfHelp);
+                categoryRepository.save(cooking);
+                
+                log.info("Categories created successfully.");
+            } else {
+                log.info("Categories already exist, skipping category creation.");
             }
+            
+            // Check if books exist
+            if (bookRepository.count() == 0) {
+                log.info("No books found. Creating sample books...");
+                
+                // Get categories by name
+                Category fiction = categoryRepository.findByName("Fiction");
+                Category fantasy = categoryRepository.findByName("Fantasy");
+                Category mystery = categoryRepository.findByName("Mystery");
+                Category thriller = categoryRepository.findByName("Thriller");
+                
+                if (fiction != null && fantasy != null && mystery != null && thriller != null) {
+                    log.info("Found required categories, creating books...");
+                    
+                    // Create books
+                    Book book1 = new Book("1984", "George Orwell", 1949, "1234567890", 9.99, fiction);
+                    Book book2 = new Book("To Kill a Mockingbird", "Harper Lee", 1960, "1234567891", 7.99, fantasy);
+                    Book book3 = new Book("A farewell to Arms", "Ernest Hemingway", 1929, "1232323-21", 5.99, thriller);
+                    Book book4 = new Book("Animal Farm", "George Orwell", 1945, "2212343-5", 6.99, mystery);
+                    
+                    // Save books
+                    bookRepository.save(book1);
+                    bookRepository.save(book2);
+                    bookRepository.save(book3);
+                    bookRepository.save(book4);
+                    
+                    log.info("Books created successfully.");
+                    
+                    // Log all books
+                    log.info("All books in database:");
+                    for (Book book : bookRepository.findAll()) {
+                        log.info(book.toString());
+                    }
+                } else {
+                    log.error("Could not find required categories. Book creation skipped.");
+                    if (fiction == null) log.error("Fiction category not found");
+                    if (fantasy == null) log.error("Fantasy category not found");
+                    if (mystery == null) log.error("Mystery category not found");
+                    if (thriller == null) log.error("Thriller category not found");
+                }
+            } else {
+                log.info("Books already exist, skipping book creation.");
+            }
+        };
+    }
+
+    @Bean
+    @Transactional
+    public CommandLineRunner userDemo(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+        return (args) -> {
+            log.info("Checking if users need to be created...");
+            
+            // Create admin user if not exists
+            if (userRepository.findByUsername("admin") == null) {
+                log.info("Creating admin user...");
+                User adminUser = new User();
+                adminUser.setUsername("admin");
+                adminUser.setPassword(passwordEncoder.encode("adminpass"));
+                adminUser.setEmail("admin@bookstore.com");
+                adminUser.setRole("ADMIN");
+                userRepository.save(adminUser);
+                log.info("Admin user created successfully.");
+            } else {
+                log.info("Admin user already exists.");
+            }
+            
+            // Create regular user if not exists
+            if (userRepository.findByUsername("user") == null) {
+                log.info("Creating regular user...");
+                User regularUser = new User();
+                regularUser.setUsername("user");
+                regularUser.setPassword(passwordEncoder.encode("userpass"));
+                regularUser.setEmail("user@bookstore.com");
+                regularUser.setRole("USER");
+                userRepository.save(regularUser);
+                log.info("Regular user created successfully.");
+            } else {
+                log.info("Regular user already exists.");
+            }
+            
+            log.info("User setup completed.");
         };
     }
 }

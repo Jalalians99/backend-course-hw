@@ -125,7 +125,7 @@ public class BookstoreApplication {
                 log.info("Creating admin user...");
                 User adminUser = new User();
                 adminUser.setUsername("admin");
-                adminUser.setPassword(passwordEncoder.encode("adminpass"));
+                adminUser.setPassword(passwordEncoder.encode("admin"));
                 adminUser.setEmail("admin@bookstore.com");
                 adminUser.setRole("ADMIN");
                 userRepository.save(adminUser);
@@ -139,7 +139,7 @@ public class BookstoreApplication {
                 log.info("Creating regular user...");
                 User regularUser = new User();
                 regularUser.setUsername("user");
-                regularUser.setPassword(passwordEncoder.encode("userpass"));
+                regularUser.setPassword(passwordEncoder.encode("user"));
                 regularUser.setEmail("user@bookstore.com");
                 regularUser.setRole("USER");
                 userRepository.save(regularUser);

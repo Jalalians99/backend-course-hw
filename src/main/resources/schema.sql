@@ -5,25 +5,25 @@ DROP TABLE IF EXISTS users;
 
 -- Create category table
 CREATE TABLE category (
-    categoryid BIGINT AUTO_INCREMENT PRIMARY KEY,
+    categoryid BIGSERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL
 );
 
--- Create book table with AUTO_INCREMENT ID
+-- Create book table
 CREATE TABLE book (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     author VARCHAR(255) NOT NULL,
     publication_year INT,
     isbn VARCHAR(20),
-    price DOUBLE,
+    price DOUBLE PRECISION,
     categoryid BIGINT,
     FOREIGN KEY (categoryid) REFERENCES category(categoryid)
 );
 
 -- Create users table
 CREATE TABLE users (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
